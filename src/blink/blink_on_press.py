@@ -8,22 +8,29 @@ BUTTON_PIN = 13 # button connected to GPIO27
 exitFlag = 1
 thread = None
 
-# blinking function
-def blink(pin):
-    gpio.output(pin, gpio.HIGH)
-    time.sleep(2)
-    gpio.output(pin, gpio.LOW)
-    time.sleep(1)
-    return
+# LED class
+class led:
+    def __init__(self, pin):
+        self.pin = pin
+    def on(self):
+        gpio.output(self.pin, gpio.HIGH)
+    def off(self):
+        gpio.output(self.pin, gpio.LOW)
+    def blink(self, timeOn, timeOff):
+        self.on()
+        time.sleep(timeOn)
+        self.off()
+        time.sleep(timeOff)
+        return
 
 # thread class
 class blink_thread(threading.Thread):
     def __init__(self, pin):
         threading.Thread.__init__(self)
-        self.pin = pin
+        self.led = led(pin)
     def run(self):
         while not exitFlag:
-            blink(self.pin)
+            self.led.blink(1, 1)
 
 def main():
     # use board pin numbers
